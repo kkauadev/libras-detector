@@ -6,6 +6,15 @@
   a linguagem de programação Python e suas bibliotecas.
 </p>
 
+<div align="center" style="margin:300px;">
+  <img
+    src="./img/tela-inicial.png"
+    width="500px"
+    alt="Tela de Início"
+    title="Tela de Início"
+    style="display: inline-block; margin: 0 auto; max-width: 300px">
+</div>
+
 <div>
   <h2>Tecnologias utilizadas</h2>
   <ul>
