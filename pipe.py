@@ -12,7 +12,6 @@
 import mediapipe as mp
 import os
 import csv
-import time
 
 mp_hands = mp.solutions.hands
 hands_detector  = mp_hands.Hands()
@@ -26,6 +25,9 @@ lista_palavras = []
 tempo_ultima_palavra = 0
 pasta_anterior = ""
 tempo_ultimo_sinal = 0
+
+MINIMO_CORRESPONDENCIA_PERCENTUAL_UNICO = 0.85 # 0.85
+MINIMO_CORRESPONDENCIA_PERCENTUAL_MULTIPLAS = 0.76 # 0.76
 
 PASTA_PRINCIPAL = './sinais'
 
@@ -63,9 +65,6 @@ def verificar_correspondencia(coordenadas_mao_em_tempo_real):
                         csvfile.seek(0)
                         next(csv_lido)
                         for row in csv_lido:
-                            etapa = float(row[0])
-                            sinal = float(row[1])
-
                              # Compare coordenadas de mão em tempo real com o arquivo CSV
                             for ponto_idx in range(0, 20):
                                 x_csv = float(row[ponto_idx * 2 + 2])
@@ -76,13 +75,12 @@ def verificar_correspondencia(coordenadas_mao_em_tempo_real):
                                 # Calcula distâncias entre pontos
                                 distancia_entre_pontos = ((x_csv - x_real) ** 2 + (y_csv - y_real) ** 2) ** 0.5
 
+                                distancia_maxima_possivel = 1.0
                                 # Defina os critérios com base no número de etapas
                                 if numero_de_etapas == 1:
-                                    distancia_maxima_possivel = 1.0
-                                    limite_correspondencia_percentual = 0.85 # 0.85
+                                    limite_correspondencia_percentual = MINIMO_CORRESPONDENCIA_PERCENTUAL_UNICO
                                 else:  # Outro critério para mais de 1 etapa
-                                    distancia_maxima_possivel = 1.0
-                                    limite_correspondencia_percentual = 0.76 # 0.76
+                                    limite_correspondencia_percentual = MINIMO_CORRESPONDENCIA_PERCENTUAL_MULTIPLAS
 
                                 # Calcular a correspondência percentual
                                 correspondencia_percentual = 1 - (distancia_entre_pontos / distancia_maxima_possivel)
