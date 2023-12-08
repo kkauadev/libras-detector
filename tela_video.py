@@ -54,8 +54,12 @@ def formatar_com_gpt3(lista_palavras, resultado_label):
     fala.runAndWait()
     
 def formatar_sem_api(lista_palavras, resultado_label):
-    print("c")
-    resultado_label.config(text=" ".join(lista_palavras))
+    lista_texto = " ".join(lista_palavras)
+    resultado_label.config(text=lista_texto)
+    print(lista_texto)
+    fala.say(lista_texto)
+
+    fala.runAndWait()
 
 def open_camera(frame: tk.Frame, button: tk.Button):
     cap = cv2.VideoCapture(0)
@@ -83,7 +87,6 @@ def open_camera(frame: tk.Frame, button: tk.Button):
         tempo_processado = 0
         while True:
             ret, new_frame = cap.read()
-            print(tempo_processado)
             tempo_processado += 1
             
             if ret:
@@ -94,11 +97,9 @@ def open_camera(frame: tk.Frame, button: tk.Button):
                     break
                 if listaPalavras and tempo_processado > 50:
                     tempo_processado = 0
-                    print("a")
                     if len(listaPalavras) > 2:
                         formatar_com_gpt3(listaPalavras, resultado_label)
                     else:
-                        print("b")
                         formatar_sem_api(listaPalavras, resultado_label)
                     
     panel = tk.Label(frame)
