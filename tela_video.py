@@ -12,6 +12,7 @@ import mediapipe as mp
 import cv2
 import tkinter as tk
 from PIL import Image, ImageTk
+from itertools import chain
 import pipe
 import threading
 import openai
@@ -28,6 +29,7 @@ fala = pyttsx3.init()
 
 def formatar_com_gpt3(lista_palavras, resultado_label):
     print("Chat GPT em execução!")
+    print(lista_palavras)
     if not lista_palavras:
         resultado_label.config(text="A lista de palavras está vazia.")
         return
@@ -53,6 +55,8 @@ def formatar_com_gpt3(lista_palavras, resultado_label):
 
     fala.runAndWait()
     
+    resultado_label.config(text="")
+    
 def formatar_sem_api(lista_palavras, resultado_label):
     lista_texto = " ".join(lista_palavras)
     resultado_label.config(text=lista_texto)
@@ -60,6 +64,7 @@ def formatar_sem_api(lista_palavras, resultado_label):
     fala.say(lista_texto)
 
     fala.runAndWait()
+    resultado_label.config(text="")
 
 def open_camera(frame: tk.Frame, button: tk.Button):
     cap = cv2.VideoCapture(0)
@@ -84,23 +89,35 @@ def open_camera(frame: tk.Frame, button: tk.Button):
             panel.after(10, show_frame) 
         
     def process_frames():
+        lista_atual = []
         tempo_processado = 0
+        
         while True:
             ret, new_frame = cap.read()
-            tempo_processado += 1
-            
             if ret:
-                estaRodando, listaPalavras = pipe.process_and_verify(new_frame) 
-                if not estaRodando:
-                    nonlocal frame 
-                    frame = new_frame
-                    break
-                if listaPalavras and tempo_processado > 50:
+                palavra = pipe.process_and_verify(new_frame) 
+                tempo_processado += 1
+                if palavra:
+                    print(palavra)
+                if tempo_processado == 0:
+                    print("tempo ok")
+                
+                if palavra and palavra not in lista_atual:
+                    lista_atual.append(palavra)
+
+                if len(lista_atual) >= 1 and tempo_processado > 50:
+                    print("lista e tempo ok")
                     tempo_processado = 0
-                    if len(listaPalavras) > 2:
-                        formatar_com_gpt3(listaPalavras, resultado_label)
+                    if len(lista_atual) > 2:
+                        print("COM CHAT")
+                        print(lista_atual)
+                        formatar_com_gpt3(lista_atual, resultado_label)
+                        lista_atual = []
                     else:
-                        formatar_sem_api(listaPalavras, resultado_label)
+                        print("SEM CHAT")
+                        formatar_sem_api(lista_atual, resultado_label)
+                        lista_atual = []
+
                     
     panel = tk.Label(frame)
     panel.place(relx=0.5, rely=0.48, anchor="center")

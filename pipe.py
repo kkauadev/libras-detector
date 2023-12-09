@@ -26,8 +26,8 @@ tempo_ultima_palavra = 0
 pasta_anterior = ""
 tempo_ultimo_sinal = 0
 
-MINIMO_CORRESPONDENCIA_PERCENTUAL_UNICO = 0.85 # 0.85
-MINIMO_CORRESPONDENCIA_PERCENTUAL_MULTIPLAS = 0.76 # 0.76
+MINIMO_CORRESPONDENCIA_PERCENTUAL_UNICO = 0.75 # 0.85
+MINIMO_CORRESPONDENCIA_PERCENTUAL_MULTIPLAS = 0.70 # 0.76
 
 PASTA_PRINCIPAL = './sinais'
 
@@ -92,23 +92,29 @@ def verificar_correspondencia(coordenadas_mao_em_tempo_real):
                             etapas_completas.append(correspondencia_encontrada)
                                 
                             if all(etapas_completas) and nome_pasta != pasta_anterior:
-                                if nome_pasta not in lista_palavras or lista_palavras.count(pasta_anterior) < 2:
-                                    lista_palavras.append(nome_pasta)
                                 pasta_anterior = nome_pasta
-                                break
+                                return nome_pasta
 
 
-    return lista_palavras
+    return None
 
 def process_and_verify(frame):
-    global lista_palavras
 
     coordenadas_mao = process_frame(frame)
     if coordenadas_mao:
-        lista_palavras = verificar_correspondencia(coordenadas_mao)
-        if len(lista_palavras) >= 3:
-            lista_atual = lista_palavras.copy()
-            lista_palavras.clear()
-            return True, list(set(lista_atual))
-    return True, []
+        palavra = verificar_correspondencia(coordenadas_mao)
+        return palavra if palavra else None
+    return None
+#def process_and_verify(frame):
+#    global lista_palavras
+#
+#    coordenadas_mao = process_frame(frame)
+#    if coordenadas_mao:
+#        lista_palavras = verificar_correspondencia(coordenadas_mao)
+#        if len(lista_palavras) >= 3:
+#            lista_atual = lista_palavras.copy()
+#            lista_palavras.clear()
+#            return True, list(set(lista_atual))
+#    return True, []
+
 

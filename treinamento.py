@@ -27,7 +27,7 @@ pasta_sinal = os.path.join(pasta_sinais, nome_sinal)
 if not os.path.exists(pasta_sinal):
     os.makedirs(pasta_sinal)
 
-for repeticao in range(1, 31):
+for repeticao in range(1, 51):
     nome_arquivo_csv = f"sinais/{nome_sinal}/{repeticao}.csv"
 
     fieldnames = ["Etapa", "Sinal"]
@@ -37,7 +37,7 @@ for repeticao in range(1, 31):
         writer.writeheader()
 
         for etapa in range(1, numero_etapas + 1):
-            cap = cv2.VideoCapture(0)
+            cap = cv2.VideoCapture(3)
             coordenadas_etapa = []
 
             print(f"Etapa: {etapa}")
