@@ -24,7 +24,7 @@ hand_connections = mp.solutions.hands.HAND_CONNECTIONS
 mp_hands = mp.solutions.hands
 hands_detector = mp_hands.Hands()
 
-openai.api_key = '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'
+openai.api_key = #sua api do chatgpt aqui
 fala = pyttsx3.init()
 
 def formatar_com_gpt3(lista_palavras, resultado_label):
